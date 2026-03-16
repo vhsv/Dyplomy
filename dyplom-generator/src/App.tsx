@@ -3,8 +3,13 @@ import * as mammoth from 'mammoth'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import './App.css'
+import Header from './components/Header'
+import Steps from './components/Steps'
+import Uploader from './components/Uploader'
+import Preview from './components/Preview'
+import DataInput from './components/DataInput'
+import Generator from './components/Generator'
 
-// Typy dla danych
 interface FieldData {
   [key: string]: string[]
 }
@@ -35,7 +40,7 @@ function App() {
         { arrayBuffer: arrayBuffer },
         {
           styleMap: [
-            // Mapowanie stylów akapitów
+            
             "p[style-name='Tytuł'] => h1",
             "p[style-name='Podtytuł'] => h2",
             "p[style-name='Nagłówek 1'] => h1",
@@ -43,27 +48,24 @@ function App() {
             "p[style-name='Nagłówek 3'] => h3",
             "p[style-name='Normalny'] => p",
             
-            // Zachowanie formatowania tekstu
+            
             "r[style-name='Pogrubienie'] => strong",
             "r[style-name='Kursywa'] => em",
             "r[style-name='Podkreślenie'] => u",
             
-            // Mapowanie stylów dla dyplomu
+            
             "p[style-name='Dyplom Tytuł'] => h1.diploma-title",
             "p[style-name='Dyplom Treść'] => p.diploma-content",
             "p[style-name='Dyplom Podpis'] => p.diploma-signature",
             
-            // Dodaj style dla tabel jeśli są
             "table => table.diploma-table",
             "tr => tr",
             "td => td"
           ],
           includeDefaultStyleMap: true
-          // Usunąłem preserveEmptyParagraphs
         }
       )
       
-      // Dodajemy dodatkowe informacje o stylach
       const styledHtml = wrapWithDiplomaStyles(result.value)
       setFileContent(styledHtml)
       
@@ -98,7 +100,6 @@ function App() {
   }
 }
 
-// Funkcja dodająca style CSS dla dyplomu
 const wrapWithDiplomaStyles = (html: string): string => {
   return `
     <div class="diploma-wrapper">
@@ -157,13 +158,7 @@ const wrapWithDiplomaStyles = (html: string): string => {
   `
 }
 
-  const findPlaceholders = (html: string): string[] => {
-    const regex = /\{\{([^}]+)\}\}/g
-    const matches = [...html.matchAll(regex)]
-    return [...new Set(matches.map(match => match[1].trim()))]
-  }
 
-  const placeholders = findPlaceholders(fileContent)
 
   const parseBulkData = () => {
     if (!bulkData.trim()) {
@@ -206,7 +201,7 @@ const wrapWithDiplomaStyles = (html: string): string => {
 
   const generatePDF = (html: string, fileName: string): Promise<Blob> => {
     return new Promise((resolve) => {
-      // Prosty generator PDF bez zewnętrznych bibliotek
+
       const styles = `
         <style>
           body { 
@@ -252,7 +247,6 @@ const wrapWithDiplomaStyles = (html: string): string => {
         </html>
       `
 
-      // Tworzymy Blob z HTML
       const blob = new Blob([content], { type: 'text/html' })
       resolve(blob)
     })
@@ -380,186 +374,25 @@ const wrapWithDiplomaStyles = (html: string): string => {
 
   return (
     <div className="app">
-      <header className="header">
-        <h1>📜 Generator Dyplomów</h1>
-      </header>
-
-      <div className="steps">
-        {[1, 2, 3, 4].map((num) => (
-          <div 
-            key={num}
-            className={`step ${step === num ? 'active' : ''}`}
-          >
-            Krok {num}: {
-              num === 1 ? 'Wgraj szablon' :
-              num === 2 ? 'Wykryte pola' :
-              num === 3 ? 'Wprowadź dane' :
-              'Generuj'
-            }
-          </div>
-        ))}
-      </div>
+      <Header></Header>
+      <Steps step={step}></Steps>
 
       <div className="content">
         {step === 1 && (
-          <div className="uploader">
-            <h2>Krok 1: Wgraj szablon dyplomu</h2>
-            
-            <div className="file-input-container">
-              <input 
-                type="file" 
-                onChange={handleFileUpload}
-                accept=".docx,.txt"
-                className="file-input"
-                id="file-upload"
-                disabled={loading}
-              />
-              <label htmlFor="file-upload" className="file-label">
-                {loading ? '⏳ Wczytywanie...' : '📁 Wybierz plik'}
-              </label>
-            </div>
-
-            {fileName && (
-              <div className="file-info">
-                <p>Wybrano: {fileName}</p>
-              </div>
-            )}
-
-            <div className="supported-formats">
-              <h3>Obsługiwane formaty:</h3>
-              <ul>
-                <li>📄 Microsoft Word (.docx) - z zachowaniem formatowania</li>
-                <li>📝 Tekstowy (.txt) - prosty tekst</li>
-              </ul>
-            </div>
-
-            <div className="hint">
-              <p>💡 Wskazówka: W swoim szablonie użyj znaczników <code>{'{{nazwa_pola}}'}</code></p>
-              <p className="example">Przykład: "Szanowny/a <strong>{'{{imie}} {{nazwisko}}'}</strong>"</p>
-            </div>
-          </div>
+          <Uploader loading={loading} fileName={fileName} handleFileUpload={handleFileUpload}></Uploader>
         )}
         
         {step === 2 && (
-          <div className="preview">
-            <h2>Krok 2: Wykryte pola</h2>
-            
-            {placeholders.length > 0 ? (
-              <div className="detected-fields">
-                <h3>🔍 Znalezione pola w szablonie:</h3>
-                <div className="fields-list">
-                  {placeholders.map((field, index) => (
-                    <span key={index} className="field-tag">
-                      {field}
-                    </span>
-                  ))}
-                </div>
-                <button 
-                  onClick={() => {
-                    setSelectedFields(placeholders)
-                    setStep(3)
-                  }} 
-                  className="btn-primary"
-                  style={{ marginTop: '20px' }}
-                >
-                  Dalej - wprowadź dane →
-                </button>
-              </div>
-            ) : (
-              <div className="no-fields">
-                <p>⚠️ Nie znaleziono pól w formacie {'{{nazwa}}'}</p>
-                <p>Dodaj je ręcznie w szablonie lub wróć do kroku 1</p>
-                <button onClick={() => setStep(1)} className="btn-secondary">
-                  ← Wróć do kroku 1
-                </button>
-              </div>
-            )}
-          </div>
+           <Preview fileContent={fileContent} setSelectedFields={setSelectedFields} setStep={setStep}></Preview>
         )}
         
         {step === 3 && (
-          <div className="data-input">
-            <h2>Krok 3: Wprowadź dane</h2>
-            
-            <div className="fields-summary">
-              <p>Pola do wypełnienia:</p>
-              <div className="fields-list">
-                {selectedFields.map((field, index) => (
-                  <span key={index} className="field-tag">
-                    {field}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <textarea 
-              value={bulkData}
-              onChange={(e) => setBulkData(e.target.value)}
-              placeholder={
-                selectedFields.length === 1 
-                  ? `Wprowadź dane dla pola "${selectedFields[0]}"\nKażda linia = jeden dyplom\n\nPrzykład:\nJan Kowalski\nAnna Nowak\nPiotr Wiśniewski`
-                  : `Wprowadź dane w formacie: ${selectedFields.join(', ')}\nKażda linia = jeden dyplom\n\nPrzykład:\nJan, Kowalski\nAnna, Nowak\nPiotr, Wiśniewski`
-              }
-              rows={10}
-              className="data-textarea"
-            />
-
-            <div className="actions">
-              <button onClick={() => setStep(2)} className="btn-secondary">
-                ← Wstecz
-              </button>
-              <button 
-                onClick={parseBulkData} 
-                className="btn-primary"
-                disabled={!bulkData.trim()}
-              >
-                Przetwórz dane →
-              </button>
-            </div>
-          </div>
+            <DataInput selectedFields={selectedFields} bulkData={bulkData} setBulkData={setBulkData} setStep={setStep} parseBulkData={parseBulkData}></DataInput>
         )}
         
         {step === 4 && (
-          <div className="generator">
-            <h2>Krok 4: Generuj dyplomy</h2>
-            
-            <div className="summary">
-              <h3>Podsumowanie:</h3>
-              <p>📄 Szablon: <strong>{fileName}</strong></p>
-              <p>🏷️ Pola: <strong>{selectedFields.join(', ')}</strong></p>
-              <p>📊 Liczba dyplomów: <strong>{dataCount}</strong></p>
-            </div>
-
-            <div className="preview-section">
-              <h3>Podgląd pierwszego dyplomu:</h3>
-              <button onClick={previewFirst} className="btn-preview">
-                👁️ Pokaż podgląd
-              </button>
-            </div>
-
-            <div className="actions">
-              <button onClick={() => setStep(3)} className="btn-secondary">
-                ← Wstecz
-              </button>
-              <button 
-                onClick={generateAll} 
-                className="btn-generate"
-                disabled={generating || dataCount === 0}
-              >
-                {generating ? '⏳ Generowanie...' : '📦 Generuj ZIP z dyplomami'}
-              </button>
-              <button onClick={() => {
-                setStep(1)
-                setFileContent('')
-                setFileName('')
-                setSelectedFields([])
-                setFieldData({})
-                setBulkData('')
-              }} className="btn-reset">
-                🔄 Zacznij od nowa
-              </button>
-            </div>
-          </div>
+          <Generator fileName={fileName} selectedFields={selectedFields} dataCount={dataCount} generating={generating} previewFirst={previewFirst} setStep={setStep} generateAll={generateAll}
+          setBulkData={setBulkData} setFieldData={setFieldData} setSelectedFields={setSelectedFields} setFileName={setFileName} setFileContent={setFileContent}></Generator>
         )}
       </div>
     </div>
