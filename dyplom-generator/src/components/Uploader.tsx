@@ -23,7 +23,7 @@ function Uploader({handleFileUpload, loading, fileName} : UploaderProps)
                 disabled={loading}
               />
               <label htmlFor="file-upload" className="file-label">
-                {loading ? '⏳ Wczytywanie...' : '📁 Wybierz plik'}
+                {loading ? ' Wczytywanie...' : 'Wybierz plik'}
               </label>
             </div>
 
@@ -36,13 +36,13 @@ function Uploader({handleFileUpload, loading, fileName} : UploaderProps)
             <div className="supported-formats">
               <h3>Obsługiwane formaty:</h3>
               <ul>
-                <li>📄 Microsoft Word (.docx) - z zachowaniem formatowania</li>
-                <li>📝 Tekstowy (.txt) - prosty tekst</li>
+                <li> Microsoft Word (.docx) - z zachowaniem formatowania</li>
+                <li>Tekstowy (.txt) - prosty tekst</li>
               </ul>
             </div>
 
             <div className="hint">
-              <p>💡 Wskazówka: W swoim szablonie użyj znaczników <code>{'{{nazwa_pola}}'}</code></p>
+              <p> Wskazówka: W swoim szablonie użyj znaczników <code>{'{{nazwa_pola}}'}</code></p>
               <p className="example">Przykład: "Szanowny/a <strong>{'{{imie}} {{nazwisko}}'}</strong>"</p>
             </div>
           </div>

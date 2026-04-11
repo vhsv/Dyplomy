@@ -19,7 +19,7 @@ function Preview({fileContent, setSelectedFields,setStep} : PreviewProps)
             
             {placeholders.length > 0 ? (
               <div className="detected-fields">
-                <h3>🔍 Znalezione pola w szablonie:</h3>
+                <h3> Znalezione pola w szablonie:</h3>
                 <div className="fields-list">
                   {placeholders.map((field, index) => (
                     <span key={index} className="field-tag">
@@ -35,12 +35,12 @@ function Preview({fileContent, setSelectedFields,setStep} : PreviewProps)
                   className="btn-primary"
                   style={{ marginTop: '20px' }}
                 >
-                  Dalej - wprowadź dane →
+                  Dalej - wprowadź dane 
                 </button>
               </div>
             ) : (
               <div className="no-fields">
-                <p>⚠️ Nie znaleziono pól w formacie {'{{nazwa}}'}</p>
+                <p>Nie znaleziono pól w formacie {'{{nazwa}}'}</p>
                 <p>Dodaj je ręcznie w szablonie lub wróć do kroku 1</p>
                 <button onClick={() => setStep(1)} className="btn-secondary">
                   ← Wróć do kroku 1

@@ -26,28 +26,28 @@ function Generator({fileName, selectedFields, dataCount,generating, previewFirst
             
             <div className="summary">
               <h3>Podsumowanie:</h3>
-              <p>📄 Szablon: <strong>{fileName}</strong></p>
-              <p>🏷️ Pola: <strong>{selectedFields.join(', ')}</strong></p>
-              <p>📊 Liczba dyplomów: <strong>{dataCount}</strong></p>
+              <p> Szablon: <strong>{fileName}</strong></p>
+              <p> Pola: <strong>{selectedFields.join(', ')}</strong></p>
+              <p>Liczba dyplomów: <strong>{dataCount}</strong></p>
             </div>
 
             <div className="preview-section">
               <h3>Podgląd pierwszego dyplomu:</h3>
               <button onClick={previewFirst} className="btn-preview">
-                👁️ Pokaż podgląd
+                 Pokaż podgląd
               </button>
             </div>
 
             <div className="actions">
               <button onClick={() => setStep(3)} className="btn-secondary">
-                ← Wstecz
+                Wstecz
               </button>
               <button 
                 onClick={generateAll} 
                 className="btn-generate"
                 disabled={generating || dataCount === 0}
               >
-                {generating ? '⏳ Generowanie...' : '📦 Generuj ZIP z dyplomami'}
+                {generating ? ' Generowanie...' : ' Generuj ZIP z dyplomami'}
               </button>
               <button onClick={() => {
                 setStep(1)
@@ -57,7 +57,7 @@ function Generator({fileName, selectedFields, dataCount,generating, previewFirst
                 setFieldData({})
                 setBulkData('')
               }} className="btn-reset">
-                🔄 Zacznij od nowa
+                 Zacznij od nowa
               </button>
             </div>
           </div>
