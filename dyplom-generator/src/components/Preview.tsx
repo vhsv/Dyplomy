@@ -33,8 +33,7 @@ function Preview({fileContent, setSelectedFields,setStep} : PreviewProps)
                     setStep(3)
                   }} 
                   className="btn-primary"
-                  style={{ marginTop: '20px' }}
-                >
+                  style={{ marginTop: '20px' }}>
                   Dalej - wprowadź dane 
                 </button>
               </div>

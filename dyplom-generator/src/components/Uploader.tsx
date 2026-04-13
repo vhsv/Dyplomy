@@ -17,7 +17,7 @@ function Uploader({handleFileUpload, loading, fileName} : UploaderProps)
               <input 
                 type="file" 
                 onChange={handleFileUpload}
-                accept=".docx,.txt"
+                accept=".docx"
                 className="file-input"
                 id="file-upload"
                 disabled={loading}
@@ -37,7 +37,6 @@ function Uploader({handleFileUpload, loading, fileName} : UploaderProps)
               <h3>Obsługiwane formaty:</h3>
               <ul>
                 <li> Microsoft Word (.docx) - z zachowaniem formatowania</li>
-                <li>Tekstowy (.txt) - prosty tekst</li>
               </ul>
             </div>
 

@@ -54,6 +54,7 @@ function App() {
             "r[style-name='Podkreślenie'] => u",
             
             
+            
             "p[style-name='Dyplom Tytuł'] => h1.diploma-title",
             "p[style-name='Dyplom Treść'] => p.diploma-content",
             "p[style-name='Dyplom Podpis'] => p.diploma-signature",
@@ -73,20 +74,8 @@ function App() {
         console.log('Ostrzeżenia:', result.messages)
       }
     } 
-    else if (fileExtension === 'txt') {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const content = e.target?.result as string
-        const htmlContent = content
-          .split('\n')
-          .map(line => line.trim() ? `<p>${line}</p>` : '<p>&nbsp;</p>') // Zamiast preserveEmptyParagraphs
-          .join('')
-        setFileContent(htmlContent)
-      }
-      reader.readAsText(file)
-    }
     else {
-      alert('Nieobsługiwany format pliku. Użyj .docx lub .txt')
+      alert('Nieobsługiwany format pliku. Użyj .docx')
       setLoading(false)
       return
     }
